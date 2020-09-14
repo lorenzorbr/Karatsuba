@@ -1,36 +1,13 @@
 import java.lang.Math;
-
-public class Karatsuba{
-    public static void main(final String args[]) {
-        String x = args[0].toString();
-        String y = args[1].toString();
-        String res = karatsubaRecursivo(x, y);
-        System.out.println(res);
+public class Karat{
+    public static void main(String args[]) {
+            
+            String res = karatsubaRecursivo(args[0], args[1]);
+            System.out.println(res);
     }
 
     public static String karatsubaRecursivo(String x, String y){
-    if(x.length() != y.length()){
-        if(x.length()> y.length()){
-            Integer dif = x.length() - y.length();
-            for(int i = 0; i < dif ; i++){
-                y = "0"+y;
-            }
-        }else{
-            Integer dif = y.length()-x.length();
-            for(int i =0 ; i<dif; i++){
-                x="0"+x;
-            }
-        }
-    }
-     String a = "";
-     String b = "";
-     String c = "";
-     String d = "";
-     String e = "";
-     String f = "";
 
-    Integer tamx = x.length();
-    Integer tamy = y.length();
         if(x.length()==1 && y.length()==1){
             int x1 = Integer.parseInt(x);
             int y1 = Integer.parseInt(y);
@@ -38,68 +15,47 @@ public class Karatsuba{
             String res = Integer.toString(z1);
             return res;
         }
-
-        if(x.length()==2){
-            x = "0" + x;
-        }
-
-        if(y.length()==2){
-            y = "0" + y;
-        }
+        while(x.length()<y.length() || x.length()%3 != 0)
+            x = "0"+x;
+        while (y.length()<x.length()|| y.length()%3 != 0)
+            y = "0"+y;
         
 
-        if((x.length()) % 3 == 0){
-            Integer div = x.length()/3;
-            a = x.substring(0, div);
-            b = x.substring(div, div+div);
-            c = x.substring(div + div, div+div+div);
-        }else if(((x.length() % 3) != 0) && x.length()>3){
-            Integer inteiro = x.length()/3;
-            Integer resto = x.length() % 3;
-            
-            a = x.substring(0, inteiro);
-            b = x.substring(inteiro , inteiro + inteiro);
-            c = x.substring(inteiro + inteiro, inteiro + inteiro + resto);
-        }
+        int divX = x.length()/3;
+        int divY = y.length()/3;
+        
+        String a = x.substring(0, divX);
+        String b = x.substring(divX,divX+divX);
+        String c = x.substring(divX+divX,x.length());
 
-        if((y.length()) % 3 == 0){
-            Integer div = y.length()/3;
-            d = y.substring(0, div);
-            e = y.substring(div, div + div);
-            f = y.substring(div+div, div+div+div);
-            
-        }else if(((y.length() % 3) != 0) && y.length()>3 ){
-            Integer inteiro = y.length()/3;
-            Integer resto = y.length() % 3;
-            
-            c = y.substring(0, inteiro);
-            d = y.substring(inteiro, inteiro + inteiro);
-            f = y.substring(inteiro + inteiro, inteiro + inteiro + resto);
+        String d = y.substring(0, divY);
+        String e = y.substring(divY,divY+divY);
+        String f = y.substring(divY+divY, y.length());
 
-        }
-        /*String shiftA = x.length() -  a.length();
-        String shiftB = x.length() - (b.length() + a.length() );
-        String shiftC = x.length() - (a.length()+ b.length()+ c.length() );
+        int shiftA = x.length() - a.length();
+        int shiftB = x.length() - b.length() - a.length();
+        int shiftD = y.length() - d.length();
+        int shiftE = y.length() - d.length() - e.length();
+     
+        String ad = karatsubaRecursivo(a, d) + concat(shiftA+shiftD);
+        String ae = karatsubaRecursivo(a, e) + concat(shiftA+shiftE);
+        String af = karatsubaRecursivo(a, f) + concat(shiftA);
+        String bd = karatsubaRecursivo(b, d) + concat(shiftB+shiftD);
+        String be = karatsubaRecursivo(b, e) + concat(shiftB+shiftE);
+        String bf = karatsubaRecursivo(b, f) + concat(shiftB);
+        String cd = karatsubaRecursivo(c, d) + concat(shiftD);
+        String ce = karatsubaRecursivo(c, e) + concat(shiftE);
+        String cf = karatsubaRecursivo(c, f);
 
-        String shiftD = y.length() -  d.length();
-        String shiftE = y.length() - (d.length() + e.length() );
-        String shiftF = y.length() - (d.length() + e.length() + f.length());*/
-        //9 filhos
-        String ad = karatsubaRecursivo(a, d);
-        String ae = karatsubaRecursivo(a, e); 
-        String af = karatsubaRecursivo(a, f); 
-        String bd = karatsubaRecursivo(b, d); 
-        String be = karatsubaRecursivo(b, e); 
-        String bf = karatsubaRecursivo(b, f); 
-        String cd = karatsubaRecursivo(c, d); 
-        String ce = karatsubaRecursivo(c, e); 
-        String cf = karatsubaRecursivo(c, f); 
-      
-        return "";
+        return soma(ad, soma(ae, soma(af, soma(bd, soma(be, soma(bf, soma(cd, soma(ce, cf))))))));
+
     }
 
-    private static String shift(String x, String y){
-        return "";
+    public static String concatEsq(String x, int zeros){
+        for(int i = (x.length() % 3) ; i < zeros ; i ++ ){
+            x = "0"+ x ;
+        }
+        return x ;
     }
 
     private static String soma(String a, String b){
@@ -130,17 +86,26 @@ public class Karatsuba{
                     soma = soma + resto;
                     resto = 0;
                 }
-                if(soma > 10){
+                if(soma >= 10 ){
                     soma = soma - 10;
                     resto = resto + 1;
-                }
+                }     
                 String aux = Integer.toString(soma);
                 resultado = resultado + aux;
             }
         }
+        if(resto >0){
+            resultado = resultado + "1";
+        }
         String z = new StringBuilder(resultado).reverse().toString();
         return z;
-    }
+        }
 
-    
+    public static String concat(int shifts){
+        String x = "";
+        for(int i = 0 ; i < shifts ; i ++){
+            x = x + "0";
+        }
+        return x ;
+    }
 }
