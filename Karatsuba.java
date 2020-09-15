@@ -1,3 +1,6 @@
+//@Author : LORENZO ROSA BRAGAGNOLO
+//DATA : 15 / 09 / 2020 
+
 import java.lang.Math;
 public class Karat{
     public static void main(String args[]) {
